@@ -3,6 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('generateRubric').addEventListener('click', generateRubric);
     document.getElementById('printRubric').addEventListener('click', printRubric);
 document.getElementById('updateRubric').addEventListener('click', updateRubric);
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing bindings ...
+
+    // Load saved rubric state
+    if (localStorage.getItem('rubricData')) {
+        const savedData = JSON.parse(localStorage.getItem('rubricData'));
+        applyJsonToRubric(savedData);
+    }
+});
+
 
 });
 
@@ -14,6 +24,7 @@ function addCriterion() {
         <input type="number" placeholder="Weight" min="0" max="100">
     `;
     criteriaContainer.appendChild(newCriterion);
+saveRubricState();
 }
 document.addEventListener('DOMContentLoaded', function() {
     // ... existing event listener bindings
@@ -94,6 +105,7 @@ function generateRubric() {
 
     rubricTableContainer.innerHTML = table;
     attachSliderEventListeners();
+saveRubricState();
 }
 
 function attachSliderEventListeners() {
@@ -101,6 +113,7 @@ function attachSliderEventListeners() {
     sliders.forEach(slider => {
         slider.addEventListener('input', function() {
             updateTotalScore(this);
+saveRubricState();
         });
     });
 }
@@ -125,6 +138,7 @@ function updateTotalScore(slider) {
 
     const scoreCell = studentRow.querySelector('.total-score');
     scoreCell.textContent = totalScore.toFixed(2); // Rounds the score to 2 decimal places
+saveRubricState();
 }
 
 
@@ -207,6 +221,7 @@ function loadFromJson(event) {
         applyJsonToRubric(data);
     };
     reader.readAsText(file);
+saveRubricState();
 }
 
 function applyJsonToRubric(data) {
@@ -245,6 +260,7 @@ function applyJsonToRubric(data) {
                         let tooltip = slider.parentNode.querySelector('.slider-tooltip');
                         if (tooltip) {
                             tooltip.textContent = scoreData.tooltip; // Set the tooltip text
+saveRubricState();
                         }
                     }
                 });
@@ -279,6 +295,7 @@ function addStudent() {
             let totalScoreCell = newRow.insertCell(-1);
             totalScoreCell.className = 'total-score';
             totalScoreCell.textContent = '0';
+saveRubricState();
         }
     }
 }
@@ -292,6 +309,7 @@ function removeCriterion() {
         if (rubricTable) {
             for (let i = 0; i < rubricTable.rows.length; i++) {
                 rubricTable.rows[i].deleteCell(-2); // Remove second-to-last cell (just before total score)
+saveRubricState();
             }
         }
     }
@@ -300,6 +318,7 @@ function removeCriterion() {
 function attachSliderEventToElement(sliderElement) {
     sliderElement.addEventListener('input', function() {
         updateTotalScore(this);
+saveRubricState();
     });
 }
 function attachSliderEventListeners() {
@@ -314,6 +333,7 @@ function attachSliderEventListeners() {
         slider.addEventListener('input', function() {
             updateTotalScore(this);
             updateSliderTooltip(this);
+saveRubricState();
         });
     });
 }
@@ -327,12 +347,14 @@ function attachSliderEventToElement(sliderElement) {
     sliderElement.addEventListener('input', function() {
         updateTotalScore(this);
         updateSliderTooltip(this);
+saveRubricState();
     });
 }
 
 function updateSliderTooltip(slider) {
     const tooltip = slider.parentNode.querySelector('.slider-tooltip');
     tooltip.textContent = slider.value;
+saveRubricState();
 }
 
 // Rest of your existing code...
@@ -373,35 +395,30 @@ function reapplyRubricData(oldData) {
                 if (slider) {
                     slider.value = score;
                     updateTotalScore(slider);
+
                 }
             });
         }
     });
 }
-
-function autosaveRubric() {
+function saveRubricState() {
     const rubricData = extractCurrentRubricData();
     localStorage.setItem('rubricData', JSON.stringify(rubricData));
 }
 
-setInterval(autosaveRubric, 10000); // Autosave every 10 seconds
+document.getElementById('clearData').addEventListener('click', clearRubricData);
 
-function attachChangeEventListeners() {
-    document.querySelectorAll('input, textarea').forEach(element => {
-        element.addEventListener('change', autosaveRubric);
-    });
+function clearRubricData() {
+    if (confirm('Are you sure you want to clear all rubric data?')) {
+        // Clear UI elements
+        document.getElementById('rubric-title').value = '';
+        document.getElementById('criteria-container').innerHTML = '';
+        document.getElementById('student-list').value = '';
+        document.getElementById('rubric-table-container').innerHTML = '';
+
+        // Clear saved data
+        localStorage.removeItem('rubricData');
+    }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    attachChangeEventListeners();
-    // ... existing code
-});
 
-document.addEventListener('DOMContentLoaded', function() {
-    const savedRubricData = localStorage.getItem('rubricData');
-    if (savedRubricData) {
-        const data = JSON.parse(savedRubricData);
-        applyJsonToRubric(data);
-    }
-    // ... existing code
-});
