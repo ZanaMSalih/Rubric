@@ -421,4 +421,18 @@ function clearRubricData() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing bindings ...
 
+    // Load saved rubric state
+    if (localStorage.getItem('rubricData')) {
+        const savedData = JSON.parse(localStorage.getItem('rubricData'));
+        applyJsonToRubric(savedData);
+    }
+});
+document.getElementById('some-input').addEventListener('change', function() {
+    // Code to handle the change
+
+    // Save the state after handling the change
+    saveRubricState();
+});
