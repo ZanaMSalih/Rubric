@@ -405,6 +405,10 @@ function autosaveRubricData() {
         criteria: [],
         students: extractCurrentRubricData().students
     };
+    tr.querySelectorAll('.score-slider').forEach(slider => {
+            studentData.scores.push({
+                value: slider.value, // Save the slider value
+                tooltip: slider.parentNode.querySelector('.slider-tooltip').textContent // Save the tooltip text
 
     document.querySelectorAll('#criteria-container div').forEach(div => {
         let criterionName = div.querySelector('input[type="text"]').value;
