@@ -427,3 +427,42 @@ function clearRubricData() {
     }
 }
 
+function updateTotalScore(slider) {
+    // ... existing code ...
+
+    // New code to save slider values
+    saveCurrentState();
+}
+
+function saveCurrentState() {
+    const rubricData = extractCurrentRubricData();
+    localStorage.setItem('rubricData', JSON.stringify(rubricData));
+}
+
+function reapplyRubricData(oldData) {
+    // ... existing code ...
+
+    // Ensure slider values are correctly set
+    oldData.students.forEach((studentData, studentIndex) => {
+        const studentRow = document.querySelector(`#rubric-table-container table tr:nth-child(${studentIndex + 2})`);
+        if (studentRow) {
+            studentData.scores.forEach((score, index) => {
+                const slider = studentRow.querySelectorAll('.score-slider')[index];
+                if (slider) {
+                    slider.value = score;
+                    updateTotalScore(slider); // Update total score based on the slider value
+                }
+            });
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing code ...
+
+    // Load saved rubric data
+    const savedRubricData = JSON.parse(localStorage.getItem('rubricData'));
+    if (savedRubricData) {
+        applyJsonToRubric(savedRubricData);
+    }
+});
