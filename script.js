@@ -405,10 +405,6 @@ function autosaveRubricData() {
         criteria: [],
         students: extractCurrentRubricData().students
     };
-    tr.querySelectorAll('.score-slider').forEach(slider => {
-            studentData.scores.push({
-                value: slider.value, // Save the slider value
-                tooltip: slider.parentNode.querySelector('.slider-tooltip').textContent // Save the tooltip text
 
     document.querySelectorAll('#criteria-container div').forEach(div => {
         let criterionName = div.querySelector('input[type="text"]').value;
@@ -471,3 +467,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+
+function autosaveRubricData() {
+    const rubricData = {
+        rubricName: document.getElementById('rubric-title').value,
+        criteria: [],
+        students: [] // We will populate this with detailed student data including slider values
+    };
+
+    // Extract criteria information
+    document.querySelectorAll('#criteria-container div').forEach(div => {
+        let criterionName = div.querySelector('input[type="text"]').value;
+        let criterionWeight = div.querySelector('input[type="number"]').value;
+        rubricData.criteria.push({ name: criterionName, weight: criterionWeight });
+    });
+
+    // Extract student data along with slider values for each criterion
+    const studentRows = document.querySelectorAll('#rubric-table-container table tr');
+    studentRows.forEach((row, index) => {
+        if (index === 0) return; // Skip the header row
+
+        const studentData = {
+            name: row.querySelector('.student-name').textContent,
+            scores: [],
+            totalScore: row.querySelector('.total-score').textContent // Assuming there's a class for total score
+        };
+
+        const sliders = row.querySelectorAll('.score-slider');
+        sliders.forEach(slider => {
+            studentData.scores.push(slider.value);
+        });
+
+        rubricData.students.push(studentData);
+    });
+
+    localStorage.setItem('rubricData', JSON.stringify(rubricData));
+}
