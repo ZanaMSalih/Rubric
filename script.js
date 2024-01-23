@@ -3,26 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('generateRubric').addEventListener('click', generateRubric);
     document.getElementById('printRubric').addEventListener('click', printRubric);
 document.getElementById('updateRubric').addEventListener('click', updateRubric);
-document.getElementById('clearData').addEventListener('click', clearRubricData);
-document.querySelectorAll('#rubric-table-container, #criteria-container, #rubric-title')
-    .forEach(element => {
-        element.addEventListener('input', autosaveRubricData);
-    });
-
-// Optional: Save every 10 seconds
-// setInterval(autosaveRubricData, 10000);
-
-window.addEventListener('DOMContentLoaded', (event) => {
-    // ... your existing code
-
-    // Load saved data, if any
-    const savedData = localStorage.getItem('rubricData');
-    if (savedData) {
-        applyJsonToRubric(JSON.parse(savedData));
-    }
-});
-
-
 
 });
 
@@ -399,107 +379,29 @@ function reapplyRubricData(oldData) {
     });
 }
 
-function autosaveRubricData() {
-    const rubricData = {
-        rubricName: document.getElementById('rubric-title').value,
-        criteria: [],
-        students: extractCurrentRubricData().students
-    };
-
-    document.querySelectorAll('#criteria-container div').forEach(div => {
-        let criterionName = div.querySelector('input[type="text"]').value;
-        let criterionWeight = div.querySelector('input[type="number"]').value;
-        rubricData.criteria.push({ name: criterionName, weight: criterionWeight });
-    });
-
-    localStorage.setItem('rubricData', JSON.stringify(rubricData));
-}
-function clearRubricData() {
-    if (confirm("Are you sure you want to clear all data?")) {
-        // Clear interface
-        document.getElementById('rubric-title').value = '';
-        document.getElementById('criteria-container').innerHTML = '';
-        document.getElementById('rubric-table-container').innerHTML = '';
-        document.getElementById('student-list').value = '';
-
-        // Clear local storage
-        localStorage.removeItem('rubricData');
-    }
-}
-
-function updateTotalScore(slider) {
-    // ... existing code ...
-
-    // New code to save slider values
-    saveCurrentState();
-}
-
-function saveCurrentState() {
+function autosaveRubric() {
     const rubricData = extractCurrentRubricData();
     localStorage.setItem('rubricData', JSON.stringify(rubricData));
 }
 
-function reapplyRubricData(oldData) {
-    // ... existing code ...
+setInterval(autosaveRubric, 10000); // Autosave every 10 seconds
 
-    // Ensure slider values are correctly set
-    oldData.students.forEach((studentData, studentIndex) => {
-        const studentRow = document.querySelector(`#rubric-table-container table tr:nth-child(${studentIndex + 2})`);
-        if (studentRow) {
-            studentData.scores.forEach((score, index) => {
-                const slider = studentRow.querySelectorAll('.score-slider')[index];
-                if (slider) {
-                    slider.value = score;
-                    updateTotalScore(slider); // Update total score based on the slider value
-                }
-            });
-        }
+function attachChangeEventListeners() {
+    document.querySelectorAll('input, textarea').forEach(element => {
+        element.addEventListener('change', autosaveRubric);
     });
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // ... existing code ...
-
-    // Load saved rubric data
-    const savedRubricData = JSON.parse(localStorage.getItem('rubricData'));
-    if (savedRubricData) {
-        applyJsonToRubric(savedRubricData);
-    }
+    attachChangeEventListeners();
+    // ... existing code
 });
 
-
-function autosaveRubricData() {
-    const rubricData = {
-        rubricName: document.getElementById('rubric-title').value,
-        criteria: [],
-        students: [] // We will populate this with detailed student data including slider values
-    };
-
-    // Extract criteria information
-    document.querySelectorAll('#criteria-container div').forEach(div => {
-        let criterionName = div.querySelector('input[type="text"]').value;
-        let criterionWeight = div.querySelector('input[type="number"]').value;
-        rubricData.criteria.push({ name: criterionName, weight: criterionWeight });
-    });
-
-    // Extract student data along with slider values for each criterion
-    const studentRows = document.querySelectorAll('#rubric-table-container table tr');
-    studentRows.forEach((row, index) => {
-        if (index === 0) return; // Skip the header row
-
-        const studentData = {
-            name: row.querySelector('.student-name').textContent,
-            scores: [],
-            totalScore: row.querySelector('.total-score').textContent // Assuming there's a class for total score
-        };
-
-        const sliders = row.querySelectorAll('.score-slider');
-        sliders.forEach(slider => {
-            studentData.scores.push(slider.value);
-        });
-
-        rubricData.students.push(studentData);
-    });
-
-    localStorage.setItem('rubricData', JSON.stringify(rubricData));
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const savedRubricData = localStorage.getItem('rubricData');
+    if (savedRubricData) {
+        const data = JSON.parse(savedRubricData);
+        applyJsonToRubric(data);
+    }
+    // ... existing code
+});
