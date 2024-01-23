@@ -383,6 +383,22 @@ function extractCurrentRubricData() {
 
     return data;
 }
+
+function reapplyRubricData(oldData) {
+    oldData.students.forEach(studentData => {
+        const studentRow = Array.from(document.querySelectorAll('#rubric-table-container tr')).find(tr => tr.cells[0].innerText === studentData.name);
+        if (studentRow) {
+            studentData.scores.forEach((score, index) => {
+                const slider = studentRow.querySelectorAll('.score-slider')[index];
+                if (slider) {
+                    slider.value = score;
+                    updateTotalScore(slider);
+                }
+            });
+        }
+    });
+}
+
 function autosaveRubricData() {
     const rubricData = {
         rubricName: document.getElementById('rubric-title').value,
@@ -450,3 +466,4 @@ document.addEventListener('DOMContentLoaded', function() {
         applyJsonToRubric(savedRubricData);
     }
 });
+
