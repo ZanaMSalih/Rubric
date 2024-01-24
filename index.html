@@ -1,40 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Interactive Rubric</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Interactive Rubric (Auto-Saved)</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <div id="rubric-container">
-        <input type="text" id="rubric-title" placeholder="Enter Rubric Name">
-        <textarea id="student-list" placeholder="Paste list of students here"></textarea>
-        <div id="criteria-container">
-            <!-- Criteria will be added here dynamically -->
-        </div>
-<button id="addCriterion">Add Criterion</button>
-<button id="removeCriterion">Remove Last Criterion</button>
-<button id="updateRubric">Update Rubric</button>
-<button id="generateRubric">Generate Rubric</button>
-<button id="addStudent">Add Student</button>
-<button id="saveJson">Save as JSON</button>
-<button id="loadJsonButton">Load from JSON</button>
-<input type="file" id="loadJson" accept=".json" style="display: none;">
-<button id="exportData">Export Data</button>
- <button id="printRubric">Print Rubric</button>
-<input type="checkbox">Autosave<id="autosave-toggle">
+  <div id="rubric-container">
+    <span id="autosave-indicator">Automatically saving...</span>
 
+    <input type="text" id="rubric-title" placeholder="Enter Rubric Name">
+    <textarea id="student-list" placeholder="Paste list of students here"></textarea>
 
+    <div id="criteria-container">
+      </div>
 
+    <button id="addCriterion">Add Criterion</button>
+    <button id="removeCriterion">Remove Last Criterion</button>
 
+    <button id="updateRubric">Update Rubric</button>
+    <button id="generateRubric">Generate Rubric</button>
 
+    <button id="addStudent">Add Student</button>
+    <button id="saveJson">Save as JSON</button>
+    <button id="loadJsonButton">Load from JSON</button>
+    <input type="file" id="loadJson" accept=".json" style="display: none;">
+    <button id="exportData">Export Data</button>
+    <button id="printRubric">Print Rubric</button>
+
+  </div>
+
+  <div id="rubric-table-container">
     </div>
 
-    <div id="rubric-table-container">
-        <!-- Generated rubric will be displayed here -->
-       
-
-    </div>
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
