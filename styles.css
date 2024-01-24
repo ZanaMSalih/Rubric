@@ -1,20 +1,31 @@
 #rubric-container {
-    margin: 20px;
-    padding: 20px;
-    border: 1px solid #ccc;
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
 }
 
 #rubric-title, #student-list {
-    width: 100%;
-    margin-bottom: 100px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 /* Add more CSS for styling your rubric as needed */
 
 .slider-tooltip {
-    display: inline-block;
-    margin-left: 10px;
-    font-size: 14px;
-    color: #555;
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 14px;
+  color: #555;
 }
 
+/* Autosave indicator styles */
+#autosave-indicator {
+  display: none;
+  color: green;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+#autosave-indicator.saving {
+  display: block;
+}
