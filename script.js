@@ -426,3 +426,34 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#rubric-container').addEventListener('input', saveRubricData);
   // ... other event listeners
 });
+document.addEventListener('DOMContentLoaded', function() {
+  // Load saved data if available
+  const savedData = localStorage.getItem('rubricData');
+  if (savedData) {
+    applyJsonToRubric(JSON.parse(savedData));
+  }
+
+  // ... existing event listener bindings
+
+  // Save data on changes
+  document.getElementById('addCriterion').addEventListener('click', saveData);
+  document.getElementById('generateRubric').addEventListener('click', saveData);
+  document.getElementById('printRubric').addEventListener('click', saveData);
+  document.getElementById('updateRubric').addEventListener('click', saveData);
+  document.getElementById('exportData').addEventListener('click', saveData);
+  document.getElementById('saveJson').addEventListener('click', saveData);
+  document.getElementById('addStudent').addEventListener('click', saveData);
+  document.getElementById('removeCriterion').addEventListener('click', saveData);
+});
+
+function saveData() {
+  const rubricData = {
+    rubricName: document.getElementById('rubric-title').value,
+    criteria: [],
+    students: []
+  };
+
+  // ... (rest of the code to populate rubricData)
+
+  localStorage.setItem('rubricData', JSON.stringify(rubricData));
+}
