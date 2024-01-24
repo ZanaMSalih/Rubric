@@ -378,77 +378,51 @@ function reapplyRubricData(oldData) {
         }
     });
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-  // ... existing event listeners
-
-  // Autosave toggle element
-  const autosaveToggle = document.getElementById('autosave-toggle');
-  autosaveToggle.addEventListener('change', function() {
-    if (this.checked) {
-      startAutosave();
-    } else {
-      stopAutosave();
-    }
-  });
-
-  // Initial autosave state (set to your preference)
-  if (localStorage.getItem('autosaveEnabled') === 'true') {
-    autosaveToggle.checked = true;
-    startAutosave();
-  }
-});
-
-function startAutosave() {
-  // Use a reasonable interval for saving, e.g., 5 seconds
-  const autosaveInterval = 5000;
-  let autosaveIntervalId = setInterval(saveRubricData, autosaveInterval);
-
-  // Store the interval ID for later clearing
-  localStorage.setItem('autosaveIntervalId', autosaveIntervalId);
-}
-
-function stopAutosave() {
-  const autosaveIntervalId = localStorage.getItem('autosaveIntervalId');
-  clearInterval(autosaveIntervalId);
-  localStorage.removeItem('autosaveIntervalId');
-}
+// ... existing code
 
 function saveRubricData() {
-  const rubricData = extractAllRubricData();
-  localStorage.setItem('rubricData', JSON.stringify(rubricData));
-}
-
-function extractAllRubricData() {
-  // Combine data extraction from existing functions
   const rubricData = {
     rubricName: document.getElementById('rubric-title').value,
     criteria: [],
-    students: extractCurrentRubricData()
+    students: []
   };
 
+  // Save criteria and weights
   document.querySelectorAll('#criteria-container div').forEach(div => {
-    let criterionName = div.querySelector('input[type="text"]').value;
-    let criterionWeight = div.querySelector('input[type="number"]').value;
+    const criterionName = div.querySelector('input[type="text"]').value;
+    const criterionWeight = div.querySelector('input[type="number"]').value;
     rubricData.criteria.push({ name: criterionName, weight: criterionWeight });
   });
 
-  return rubricData;
+  // Save students, their scores, and total scores
+  document.querySelectorAll('#rubric-table-container tr').forEach((tr, index) => {
+    if (index === 0) return; // Skip the header row
+
+    const studentData = {
+      name: tr.cells[0].innerText,
+      scores: Array.from(tr.querySelectorAll('.score-slider')).map(slider => slider.value),
+      totalScore: tr.cells[tr.cells.length - 1].innerText
+    };
+
+    rubricData.students.push(studentData);
+  });
+
+  localStorage.setItem('rubricData', JSON.stringify(rubricData));
 }
 
-// ... existing code ...
-
 function loadRubricData() {
-  const rubricData = JSON.parse(localStorage.getItem('rubricData'));
-  if (rubricData) {
-    applyJsonToRubric(rubricData);
+  const storedData = localStorage.getItem('rubricData');
+  if (storedData) {
+    const data = JSON.parse(storedData);
+    applyJsonToRubric(data);
   }
 }
 
+// ... existing event listeners
 document.addEventListener('DOMContentLoaded', function() {
+  loadRubricData(); // Load saved data on page load
+
   // ... existing event listeners
-
-  // Load saved data on page load
-  loadRubricData();
-
-  // Autosave toggle element ... (rest of the code)
+  document.querySelector('#rubric-container').addEventListener('input', saveRubricData);
+  // ... other event listeners
+});
